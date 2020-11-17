@@ -131,6 +131,7 @@ int main (int argc, char **argv) {
         int t = std::stoi(get_opt(argc, argv, "-t=", "0"));
         bool hubs = has_opt(argc, argv, "-hubs");
 
+        std::cout << "\n\n" << std::endl;
         int arr = rpt.earliest_arrival_time(src, dst, t, hubs, ! hubs, chg);
         std::cout <<" -------- "<< (hubs ? "HL_" : "") <<"Raptor "
                   <<"from "<< src << "=" << ttbl.station_id[src] <<" at "<< t;
