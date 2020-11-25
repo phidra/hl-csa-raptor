@@ -122,12 +122,41 @@ int main (int argc, char **argv) {
 
     //* Print a journey
     if (has_opt(argc, argv, "-journey")) {
+
         int src = std::stoi(get_opt(argc, argv, "-src=", "-1"));
         if (src == -1)
-            src = ttbl.id_to_station[get_opt(argc, argv, "-src-id=", "")];
+        {
+            auto srcid = get_opt(argc, argv, "-src-id=", "");
+            bool found = ttbl.id_to_station.find(srcid) != ttbl.id_to_station.end();
+            if (!found)
+            {
+                std::cout << "ERROR : unable to find src from src-id = '" << srcid << "'" << std::endl;
+                exit(1);
+            }
+            else
+            {
+                src = ttbl.id_to_station[srcid];
+            }
+        }
+        std::cout << "USING SRC = " << src << std::endl;
+
         int dst = std::stoi(get_opt(argc, argv, "-dst=", "-1"));
         if (dst == -1)
-            dst = ttbl.id_to_station[get_opt(argc, argv, "-dst-id=", "")];
+        {
+            auto dstid = get_opt(argc, argv, "-dst-id=", "");
+            bool found = ttbl.id_to_station.find(dstid) != ttbl.id_to_station.end();
+            if (!found)
+            {
+                std::cout << "ERROR : unable to find dst from dst-id = '" << dstid << "'" << std::endl;
+                exit(1);
+            }
+            else
+            {
+                dst = ttbl.id_to_station[dstid];
+            }
+        }
+        std::cout << "USING DST = " << dst << std::endl;
+
         int t = std::stoi(get_opt(argc, argv, "-t=", "0"));
         bool hubs = has_opt(argc, argv, "-hubs");
 
