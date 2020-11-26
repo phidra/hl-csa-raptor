@@ -7,7 +7,6 @@
 #include <set>
 
 #include "timetable.hh"
-#include "connection_scan.hh"
 #include "pareto_rev.hh"
 
 
@@ -121,8 +120,7 @@ public:
                             const T min_chg_bef = 60, // chg time before trip
                             const T min_chg_aft = 0, // chg time after trip
                             const int k_max = ntrips_max,
-                            const bool at_least_one_trip = false,
-                            connection_scan *earliest_only_csa = nullptr) {
+                            const bool at_least_one_trip = false) {
 
         assert(k_max <= ntrips_max);
         
@@ -193,13 +191,6 @@ public:
 
         if (use_hubs) {
             /* Only ok for pure arrival time (not pareto set with k): */
-            if (earliest_only_csa != nullptr){
-                assert(min_chg_aft == 0);
-                st_eat[dst] = 1 + earliest_only_csa
-                    ->earliest_arrival_time(src, dst, t_dep,
-                                            false, true, min_chg_bef,k_max);
-                if (st_eat[dst] > ttbl.t_max) st_eat[dst] = ttbl.t_max;
-            }
             for (auto e : ttbl.outhubs[src]) {
                 if (t_dep + e.wgt >= st_eat[dst]) break; // target prun
                 reach_station_walk(e.dst, t_dep + e.wgt, e.wgt, src, 0);
