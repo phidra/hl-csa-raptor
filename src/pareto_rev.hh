@@ -160,55 +160,5 @@ public:
 
 
 
-namespace unit {
-
-    void pareto_rev_test(size_t n, int rnd = 100) {
-        std::cerr <<"pareto_rev_test: sizeof(int)="<< sizeof(int)
-                  <<" ---------- \n";
-        pareto_rev<int> ps(n);
-        std::vector<pareto_rev<int>::point> dom;
-        for (int i = 0; i < n; ++i) {
-            int x = rand() % rnd, y = rand() % rnd;
-            std::cout <<"add "<< x <<","<< y <<" ";
-            bool dominated = ps.dominates(x, y);
-            std::cout <<" dom="<< dominated <<"\n";
-            if ( ! ps.add(x, y)) {
-                ps.print();
-                assert(dominated);
-                dom.push_back(pareto_rev<int>::point(x,y));
-            } else {
-                ps.print();
-                assert( ! dominated);
-            }
-            ps.check();
-            for (auto p : dom) assert(ps.dominates(p.x, p.y));
-            y = - rand() % rnd;
-            x = ps.smallest_x_bellow(rnd, y);
-            std::cout <<"smallest_x_bellow ("<< y <<") = "<< x <<"\n";
-            for (auto p : ps.pts) assert(p.y > y || p.x >= x || x == rnd);
-            if (i % (n/2) == n/8) {
-                dom.clear();
-                int x = rand() % (rnd/4+1), y = rand() % (rnd/4+1);
-                pareto_rev<int> xy(1);
-                xy.add(x,y);
-                int n_dom = 0;
-                for (auto p : ps.pts) if (xy.dominates(p.x, p.y)) ++n_dom;
-                int ps_size = ps.size();
-                bool dom = ps.del_dominated(x, y);
-                std::cout <<"............del_dominated "<< x <<" "<< y <<" : "
-                          << n_dom <<"\n";
-                assert(dom == (n_dom > 0));
-                assert(n_dom == ps_size - ps.size());
-            }
-        }
-        ps.add(9,4);
-        ps.print();
-        ps.check();
-        for (auto p : dom) assert(ps.dominates(p.x, p.y));
-    }
-    
-}
-    
-
 
 #endif // PARETO_REV_HH
